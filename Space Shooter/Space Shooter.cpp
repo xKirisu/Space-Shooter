@@ -2,6 +2,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "Global.hpp"
+#include "Bullet.hpp"
 #include "Player.hpp"
 
 int main()
@@ -34,11 +35,15 @@ int main()
 
 
     // Objects
+    ss::Bullet::initBullet(player_bullet_texture, enemy_bullet_texture);
+
     sf::Vector2f start_position = sf::Vector2f(32, 32);
     ss::Player player(start_position, player_texture);
 
+
     // Ticks and Time
-    sf::Clock clock;
+    sf::Clock timeglobal;
+    sf::Clock tickrate;
     
 
     // Main loop
@@ -61,14 +66,19 @@ int main()
         }
 
         // Actions
-        float tick = clock.restart().asSeconds();
-        player.action(tick);
+        float time = timeglobal.getElapsedTime().asSeconds();
+        float tick = tickrate.restart().asSeconds();
+        player.action(tick, time);
 
         // Draw
         window.clear();
         window.draw(background);
 
         player.draw(window);
+
+        for (ss::Bullet& bullet : ss::Bullet::getBullets()) {
+            bullet.draw(window);
+        }
 
         window.display();
     }

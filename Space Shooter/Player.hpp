@@ -18,7 +18,7 @@ namespace ss {
 		Player(sf::Vector2f position, sf::Texture& texture);
 		void getEvent(sf::Event::KeyPressed keypress);
 		void getEvent(sf::Event::KeyReleased keyreleased);
-		void action(float& tick);
+		void action(float& tick, float &time);
 	};
 
 }

@@ -1,5 +1,7 @@
-#include "Player.hpp"
 #include "Global.hpp"
+#include "Player.hpp"
+#include "Bullet.hpp"
+
 
 ss::Player::Player(sf::Vector2f position, sf::Texture& texture) : Ship(position, texture)
 {
@@ -24,7 +26,9 @@ void ss::Player::getEvent(sf::Event::KeyPressed keypress)
 	if (keypress.scancode == sf::Keyboard::Scancode::D) {
 		moveRight = true;
 	}
-
+	if (keypress.scancode == sf::Keyboard::Scancode::Space) {
+		isShoot = true;
+	}
 }
 
 void ss::Player::getEvent(sf::Event::KeyReleased keyreleased)
@@ -47,10 +51,12 @@ void ss::Player::getEvent(sf::Event::KeyReleased keyreleased)
 		rect.position = sf::Vector2i(SIZE, 0);
 		sprite.setTextureRect(rect);
 	}
-
+	if (keyreleased.scancode == sf::Keyboard::Scancode::Space) {
+		isShoot = false;
+	}
 }
 
-void ss::Player::action(float& tick)
+void ss::Player::action(float& tick, float& time)
 {
 	if (moveLeft) {
 		sprite.move(sf::Vector2f(-moveSpeed * tick, 0));
@@ -69,5 +75,14 @@ void ss::Player::action(float& tick)
 	}
 	if (moveDown) {
 		sprite.move(sf::Vector2f(0, moveSpeed * tick));
+	}
+
+	if (isShoot) {
+		if (time > shootLastTime + shootSpeedTime) {
+
+			Bullet::spawnBullet(BulletType::PLAYER);
+			shootLastTime = time;
+
+		}
 	}
 }

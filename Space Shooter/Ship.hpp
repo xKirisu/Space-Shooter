@@ -14,6 +14,9 @@ namespace ss {
 		float moveSpeed = 0;
 		bool moveLeft = false, moveRight = false;
 
+		float shootLastTime = 0;
+		float shootSpeedTime = 0;
+		bool isShoot = false;
 	public:
 
 		Ship(sf::Vector2f position, sf::Texture& texture);
@@ -21,7 +24,7 @@ namespace ss {
 		void shoot();
 
 		// change object
-		void action(float &tick);
+		void action(float &tick, float&time);
 
 		// draw object
 		void draw(sf::RenderWindow &window);
