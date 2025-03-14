@@ -24,6 +24,7 @@ void ss::Player::playAnimationBoosters(float& tick)
 
 ss::Player::Player(sf::Vector2f position, sf::Texture& texture, sf::Texture& boosters_main_texture, sf::Texture& boosters_left_texture, sf::Texture& boosters_right_texture) : Ship(position, texture), boosters(boosters_main_texture)
 {
+	healthPoints = 3;
 	moveSpeed = 95.5f;
 
 	shootOffset = sf::Vector2f(0, -0.25);
@@ -158,4 +159,9 @@ void ss::Player::draw(sf::RenderWindow& window)
 	window.draw(boosters);
 
 	Ship::draw(window);
+}
+
+int ss::Player::getLifes()
+{
+	return healthPoints;
 }

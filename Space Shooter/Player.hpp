@@ -8,10 +8,9 @@ namespace ss {
 
 	class Player : public Ship {
 	private:
-		int healthPoints = 3;
-		bool moveUp = false, moveDown = false;
 
-		
+		int healthPoints;
+		bool moveUp = false, moveDown = false;
 
 		sf::Sprite boosters;
 		sf::Vector2f boosters_offset;
@@ -31,6 +30,7 @@ namespace ss {
 		void getEvent(sf::Event::KeyReleased keyreleased);
 		void action(float& tick, float &time);
 		void draw(sf::RenderWindow& window);
+		int getLifes();
 	};
 
 }

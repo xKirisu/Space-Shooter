@@ -23,6 +23,7 @@ void ss::Bullet::action(float& tick)
 		break;
 	case ss::ENEMY:
 		sprite.move(sf::Vector2f(0, moveSpeed * tick));
+		sprite.setTextureRect(RECT_BASE);
 		break;
 	default:
 		break;
