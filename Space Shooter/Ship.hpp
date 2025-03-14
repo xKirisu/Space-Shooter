@@ -14,11 +14,13 @@ namespace ss {
 		float moveSpeed = 0;
 		bool moveLeft = false, moveRight = false;
 
+		sf::Vector2f shootOffset;
 		float shootLastTime = 0;
 		float shootSpeedTime = 0;
 		bool isShoot = false;
 	public:
 
+		Ship();
 		Ship(sf::Vector2f position, sf::Texture& texture);
 
 		void shoot();

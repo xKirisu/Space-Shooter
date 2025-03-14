@@ -1,6 +1,11 @@
 #include "Ship.hpp"
 #include "Global.hpp"
 
+ss::Ship::Ship() : sprite(EMPTY_TEXTURE)
+{
+
+}
+
 ss::Ship::Ship(sf::Vector2f position, sf::Texture& texture) : sprite(texture)
 {
 	sprite.setTextureRect(RECT_BASE);

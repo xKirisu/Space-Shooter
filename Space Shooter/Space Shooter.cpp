@@ -38,7 +38,7 @@ int main()
     ss::Bullet::initBullet(player_bullet_texture, enemy_bullet_texture);
 
     sf::Vector2f start_position = sf::Vector2f(32, 32);
-    ss::Player player(start_position, player_texture);
+    ss::Player player(start_position, player_texture, boosters_texture, boosters_left_texture, boosters_right_texture);
 
 
     // Ticks and Time
@@ -68,17 +68,24 @@ int main()
         // Actions
         float time = timeglobal.getElapsedTime().asSeconds();
         float tick = tickrate.restart().asSeconds();
+
         player.action(tick, time);
+
+        for (ss::Bullet& bullet : ss::Bullet::getBullets()) {
+            bullet.action(tick);
+        }
 
         // Draw
         window.clear();
         window.draw(background);
 
-        player.draw(window);
 
         for (ss::Bullet& bullet : ss::Bullet::getBullets()) {
             bullet.draw(window);
         }
+
+        player.draw(window);
+
 
         window.display();
     }
