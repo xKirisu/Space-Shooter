@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Space Shooter.cpp" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="Bullet.hpp" />
     <ClInclude Include="Enemy.hpp" />
+    <ClInclude Include="Explosion.hpp" />
     <ClInclude Include="Global.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Ship.hpp" />

@@ -9,7 +9,6 @@ namespace ss {
 	class Player : public Ship {
 	private:
 
-		int healthPoints;
 		bool moveUp = false, moveDown = false;
 
 		sf::Sprite boosters;
@@ -23,6 +22,8 @@ namespace ss {
 		float animationTickCollectorBoosters;
 		float animationSwapTimeBoosters;
 		void playAnimationBoosters(float& tick);
+
+		void die() override;
 
 	public:
 		Player(sf::Vector2f position, sf::Texture& texture, sf::Texture &boosters_main, sf::Texture &boosters_left, sf::Texture &boosters_right);

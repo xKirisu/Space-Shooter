@@ -19,6 +19,8 @@ namespace ss {
 		static sf::Vector2f *spawnPoints;
 		static int spawnCount;
 
+		float shootRandomize;
+
 	public:
 		Enemy();
 		Enemy(sf::Vector2f position, sf::Texture &texture, float move_speed, float shoot_speed, int hp);
@@ -27,8 +29,11 @@ namespace ss {
 
 		static void initEnemies(sf::Texture& enemy1, sf::Texture& enemy2, sf::Texture& enemy3, sf::Vector2f spawn_points[], int count);
 		static void spawnEnemy(float& tick);
+
+
 		static std::vector<Enemy>& getEnemies();
 
+		void die() override;
 	};
 
 }

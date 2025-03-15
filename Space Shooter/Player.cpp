@@ -22,10 +22,15 @@ void ss::Player::playAnimationBoosters(float& tick)
 	}
 }
 
+void ss::Player::die()
+{
+
+}
+
 ss::Player::Player(sf::Vector2f position, sf::Texture& texture, sf::Texture& boosters_main_texture, sf::Texture& boosters_left_texture, sf::Texture& boosters_right_texture) : Ship(position, texture), boosters(boosters_main_texture)
 {
 	healthPoints = 3;
-	moveSpeed = 95.5f;
+	moveSpeed = 155.5f;
 
 	shootOffset = sf::Vector2f(0, -0.25);
 	shootSpeedTime = 0.5f;
@@ -124,6 +129,11 @@ void ss::Player::action(float& tick, float& time)
 
 		rect.position = sf::Vector2i(0, 0);
 		sprite.setTextureRect(rect);
+
+		if (sprite.getPosition().x < 0) {
+			sprite.move(sf::Vector2f(moveSpeed * tick, 0));
+			boosters.move(sf::Vector2f(moveSpeed * tick, 0));
+		}
 	}
 	if (moveRight) {
 		sprite.move(sf::Vector2f(moveSpeed * tick, 0));
@@ -131,14 +141,33 @@ void ss::Player::action(float& tick, float& time)
 
 		rect.position = sf::Vector2i(2*SIZE, 0);
 		sprite.setTextureRect(rect);
+
+		if (sprite.getPosition().x > WIN_WIDTH - SIZE*SCALE) {
+			sprite.move(sf::Vector2f(-moveSpeed * tick, 0));
+			boosters.move(sf::Vector2f(-moveSpeed * tick, 0));
+		}
+
 	}
 	if (moveUp) {
 		sprite.move(sf::Vector2f(0, -moveSpeed * tick));
 		boosters.move(sf::Vector2f(0, -moveSpeed * tick));
+
+		if (sprite.getPosition().y < 0) {
+
+			sprite.move(sf::Vector2f(0, moveSpeed * tick));
+			boosters.move(sf::Vector2f(0, moveSpeed * tick));
+
+		}
 	}
 	if (moveDown) {
 		sprite.move(sf::Vector2f(0, moveSpeed * tick));
 		boosters.move(sf::Vector2f(0, moveSpeed * tick));
+
+		if (sprite.getPosition().y > WIN_HEIGHT - SIZE * SCALE) {
+
+			sprite.move(sf::Vector2f(0, -moveSpeed * tick));
+			boosters.move(sf::Vector2f(0, -moveSpeed * tick));
+		}
 	}
 
 	if (isShoot) {
@@ -152,6 +181,12 @@ void ss::Player::action(float& tick, float& time)
 	}
 
 	playAnimationBoosters(tick);
+
+	for (Bullet& bullet : Bullet::getBullets()) {
+		if (bullet.getType() != BulletType::PLAYER) {
+			checkCollide(bullet);
+		}
+	}
 }
 
 void ss::Player::draw(sf::RenderWindow& window)

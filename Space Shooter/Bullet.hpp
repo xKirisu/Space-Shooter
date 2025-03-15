@@ -19,20 +19,26 @@ namespace ss {
 
 		static std::unordered_map<BulletType, Bullet> bullets_prefabs;
 		static std::vector<Bullet> bullets;
-		float moveSpeed = 148;
-
+		float moveSpeed;
+		
 	public:
 
 		Bullet();
 		Bullet(sf::Texture& texture);
 
+		sf::FloatRect getCollider();
+
 		void action(float& tick);
 		void draw(sf::RenderWindow& window);
 
+		BulletType getType();
+
 		static void initBullet(sf::Texture &player_bullet_texture, sf::Texture &enemy_bullet_texture);
 		static void spawnBullet(BulletType type, sf::Vector2f position);
-		static std::vector<Bullet>& getBullets();
 
+		static void removeBullet(Bullet& bullet);
+
+		static std::vector<Bullet>& getBullets();
 	};
 
 }

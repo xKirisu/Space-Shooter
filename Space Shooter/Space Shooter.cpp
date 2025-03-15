@@ -32,14 +32,16 @@ int main()
     sf::Texture enemy_bullet_texture("data/textures/enemy_bullet.png");
 
     sf::Texture background_texture("data/textures/background.png");
+    background_texture.setRepeated(true);
 
     sf::Texture lifepoint_texture("data/textures/life_icon.png");
 
     // Objects Base
     // Background
-    sf::Vector2f background_size = sf::Vector2f(ss::WIN_WIDTH, ss::WIN_HEIGHT);
-    sf::RectangleShape background(background_size);
-    background.setTexture(&background_texture);
+    sf::IntRect background_size(sf::Vector2i(0, 0), sf::Vector2i(ss::WIN_WIDTH, ss::WIN_HEIGHT));
+    sf::Sprite background(background_texture);
+    background.setTextureRect(background_size);
+
 
 
     // Life Points

@@ -2,6 +2,7 @@
 #define _SS_Ship
 
 #include <SFML/Graphics.hpp>
+#include "Bullet.hpp"
 
 namespace ss {
 
@@ -11,6 +12,7 @@ namespace ss {
 		sf::Sprite sprite;
 		sf::IntRect rect;
 
+		int healthPoints;
 		float moveSpeed = 0;
 		bool moveLeft = false, moveRight = false;
 
@@ -22,6 +24,9 @@ namespace ss {
 
 		Ship();
 		Ship(sf::Vector2f position, sf::Texture& texture);
+
+		void checkCollide(Bullet& bullet);
+		virtual void die();
 
 		void shoot();
 
