@@ -5,6 +5,7 @@
 #include "Bullet.hpp"
 #include "Enemy.hpp"
 #include "Player.hpp"
+#include "Explosion.hpp"
 
 int main()
 {
@@ -31,42 +32,64 @@ int main()
     sf::Texture player_bullet_texture("data/textures/player_bullet.png");
     sf::Texture enemy_bullet_texture("data/textures/enemy_bullet.png");
 
+    sf::Texture explosion_texture("data/textures/explosion.png");
+
     sf::Texture background_texture("data/textures/background.png");
     background_texture.setRepeated(true);
 
     sf::Texture lifepoint_texture("data/textures/life_icon.png");
 
     // Objects Base
+    bool startGame = false;
+
     // Background
     sf::IntRect background_size(sf::Vector2i(0, 0), sf::Vector2i(ss::WIN_WIDTH, ss::WIN_HEIGHT));
     sf::Sprite background(background_texture);
     background.setTextureRect(background_size);
-
-
 
     // Life Points
     sf::Vector2f life_point_start_position = sf::Vector2f(ss::WIN_WIDTH - 3*ss::SIZE*ss::SCALE, ss::WIN_HEIGHT - ss::SCALE*ss::SIZE);
     sf::Sprite life_point(lifepoint_texture);
     life_point.setScale(sf::Vector2f(ss::SCALE, ss::SCALE));
 
-
     // Score
-    int score = 0;
-    std::string score_string = "Score: " + score;
+    int highscore = 1;
+    int score = 1;
+    std::string high_score = "Highscore: 1234";
+    std::string score_string = "Score: 1234";
+    std::string title_string = "Space Shooter";
 
-    //sf::Font score_font("");
-    //sf::Text score_text(score_font);
+    sf::Font score_font("data/fonts/Adventurer.ttf");
+    sf::Font title_font("data/fonts/Boldreel.ttf");
 
-    //sf::Vector2f score_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE);
+    sf::Text score_text(score_font);
+    sf::Text highscore_text(score_font);
 
-    //score_text.setCharacterSize(24);
-    //score_text.setString(score_string);
-    //score_text.setFillColor(sf::Color::White);
-    //score_text.setPosition(score_position);
+    sf::Text title_text(title_font);
 
+    sf::Vector2f score_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE + ss::SIZE);
+    sf::Vector2f highscore_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE*1.5 + ss::SIZE);
+
+    sf::Vector2f title_position = sf::Vector2f(ss::WIN_WIDTH / 10, ss::WIN_HEIGHT / 5);
+
+    score_text.setCharacterSize(24);
+    score_text.setString(score_string);
+    score_text.setFillColor(sf::Color::White);
+    score_text.setPosition(score_position);
+
+    highscore_text.setCharacterSize(24);
+    highscore_text.setString(high_score);
+    highscore_text.setFillColor(sf::Color::White);
+    highscore_text.setPosition(highscore_position);
+
+    title_text.setCharacterSize(125);
+    title_text.setString(title_string);
+    title_text.setFillColor(sf::Color::Yellow);
+    title_text.setPosition(title_position);
 
 
     // Objects
+    ss::Explosion::initExplosion(explosion_texture);
     ss::Bullet::initBullet(player_bullet_texture, enemy_bullet_texture);
 
     sf::Vector2f spawn_points[] = {
@@ -77,7 +100,7 @@ int main()
     };
     ss::Enemy::initEnemies(enemy1_texture, enemy2_texture, enemy3_texture, spawn_points, 4);
 
-    sf::Vector2f player_start_position = sf::Vector2f(32, 32);
+    sf::Vector2f player_start_position = sf::Vector2f(ss::WIN_WIDTH/2 - ss::SIZE*ss::SCALE/2 + ss::SIZE, ss::WIN_HEIGHT/2 + ss::SIZE * ss::SCALE*3);
     ss::Player player(player_start_position, player_texture, boosters_texture, boosters_left_texture, boosters_right_texture);
 
 
@@ -95,6 +118,10 @@ int main()
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
                 player.getEvent(*keyPressed);
+
+                if (!startGame) {
+                    startGame = true;
+                }
             }
             if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
                 player.getEvent(*keyReleased);
@@ -111,7 +138,9 @@ int main()
 
         player.action(tick, time);
 
-        ss::Enemy::spawnEnemy(tick);
+        if (startGame) {
+            ss::Enemy::spawnEnemy(tick);
+        }
 
         for (ss::Enemy& enemy : ss::Enemy::getEnemies()) {
             enemy.action(tick, time);
@@ -120,6 +149,11 @@ int main()
         for (ss::Bullet& bullet : ss::Bullet::getBullets()) {
             bullet.action(tick);
         }
+
+        ss::Explosion::actionExplosion(tick);
+
+        //high_score = "Highscore: " + highscore;
+        //score_string = "Score: " + score;
 
         // Draw
         window.clear();
@@ -135,12 +169,21 @@ int main()
 
         player.draw(window);
 
+        ss::Explosion::drawExplosion(window);
+
         // Draw ui
         for (int i = 0; i < player.getLifes(); i++) {
             life_point.setPosition(life_point_start_position + sf::Vector2f(i * ss::SCALE * ss::SIZE, 0));
             window.draw(life_point);
         }
 
+        window.draw(highscore_text);
+        window.draw(score_text);
+
+        if (!startGame) {
+            window.draw(title_text);
+        }
+        
         window.display();
     }
 }

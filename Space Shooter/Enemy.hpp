@@ -11,6 +11,7 @@ namespace ss {
 	};
 	class Enemy : public Ship {
 
+		static int enemiesIfMinimumBooser;
 		static float enemiesSpawnCollector;
 		static float enemiesSpawnBreak;
 		static std::unordered_map<EnemyType, Enemy> enemies_prefabs;
@@ -21,9 +22,14 @@ namespace ss {
 
 		float shootRandomize;
 
+		sf::IntRect animationRect;
+		float animationTickCollector;
+		static float animationSwapTime;
+		int animationMaxWidth;
+
 	public:
 		Enemy();
-		Enemy(sf::Vector2f position, sf::Texture &texture, float move_speed, float shoot_speed, int hp);
+		Enemy(sf::Vector2f position, sf::Texture &texture, float move_speed, float shoot_speed, int hp, int animation_max_width);
 
 		void action(float& tick, float& time);
 

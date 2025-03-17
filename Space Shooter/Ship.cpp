@@ -1,5 +1,6 @@
 #include "Ship.hpp"
 #include "Global.hpp"
+#include "Explosion.hpp"
 
 ss::Ship::Ship() : sprite(EMPTY_TEXTURE)
 {
@@ -31,7 +32,7 @@ void ss::Ship::checkCollide(Bullet& bullet)
 
 void ss::Ship::die()
 {
-
+	Explosion::spawnExplosion(sprite.getPosition());
 }
 
 void ss::Ship::draw(sf::RenderWindow& window)

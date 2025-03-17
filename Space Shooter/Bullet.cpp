@@ -67,7 +67,10 @@ void ss::Bullet::spawnBullet(BulletType type, sf::Vector2f position)
 }
 void ss::Bullet::removeBullet(Bullet& bullet)
 {
-	/*bullets.remove(bullet);*/
+	bullets.erase(
+		std::remove_if(bullets.begin(), bullets.end(),
+			[&bullet](const Bullet& b) { return &b == &bullet; }),
+		bullets.end());
 }
 std::vector<ss::Bullet>& ss::Bullet::getBullets()
 {

@@ -4,23 +4,32 @@
 #include <SFML/Graphics/Font.hpp>
 #include "Global.hpp"
 
-class Explosion {
+namespace ss {
+	class Explosion {
 
-	float animationTickCollector;
-	float animationSwapTime;
+		float animationTickCollector;
+		float animationSwapTime;
+		static int animationMaxWidth;
 
-	static std::vector<Explosion> explosions;
+		static Explosion explisionPrefab;
+		sf::Sprite sprite;
+		sf::IntRect animationRect;
 
-public:
-	Explosion();
+		static std::vector<Explosion> explosions;
 
-	static void initExplosion();
-	
-	static void spawnExplosion();
-	static void actionExplosion(float &tick);
-	static void drawExplosion(sf::RenderWindow &app);
-	static void removeExplosion();
-};
+	public:
+		Explosion();
+		Explosion(sf::Texture& texture);
+
+		static void initExplosion(sf::Texture& texture);
+
+		static void spawnExplosion(sf::Vector2f position);
+		static void actionExplosion(float& tick);
+		static void drawExplosion(sf::RenderWindow& window);
+		static void removeExplosion();
+	};
+
+}
 
 
 #endif // !_SS_Explosion
