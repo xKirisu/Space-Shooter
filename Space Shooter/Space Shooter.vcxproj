@@ -139,6 +139,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Space Shooter.cpp" />
   </ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="Explosion.hpp" />
     <ClInclude Include="Global.hpp" />
     <ClInclude Include="Player.hpp" />
+    <ClInclude Include="Score.hpp" />
     <ClInclude Include="Ship.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

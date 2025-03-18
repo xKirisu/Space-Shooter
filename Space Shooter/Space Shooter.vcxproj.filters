@@ -33,6 +33,9 @@
     <ClCompile Include="Explosion.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Score.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ship.hpp">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Explosion.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Score.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

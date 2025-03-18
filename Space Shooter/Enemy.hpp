@@ -27,9 +27,11 @@ namespace ss {
 		static float animationSwapTime;
 		int animationMaxWidth;
 
+		int giveScore;
+
 	public:
 		Enemy();
-		Enemy(sf::Vector2f position, sf::Texture &texture, float move_speed, float shoot_speed, int hp, int animation_max_width);
+		Enemy(sf::Vector2f position, sf::Texture &texture, float move_speed, float shoot_speed, int hp, int give_score, int animation_max_width);
 
 		void action(float& tick, float& time);
 

@@ -6,6 +6,7 @@
 #include "Enemy.hpp"
 #include "Player.hpp"
 #include "Explosion.hpp"
+#include "Score.hpp"
 
 int main()
 {
@@ -55,11 +56,11 @@ int main()
     // Score
     int highscore = 1;
     int score = 1;
-    std::string high_score = "Highscore: 1234";
-    std::string score_string = "Score: 1234";
+    std::string high_score = "Highscore: "+ std::to_string(ss::Score::getHighScore());
+    std::string score_string = "Score: " + std::to_string(ss::Score::getScore());
     std::string title_string = "Space Shooter";
 
-    sf::Font score_font("data/fonts/Adventurer.ttf");
+    sf::Font score_font("data/fonts/Boldreel.ttf");
     sf::Font title_font("data/fonts/Boldreel.ttf");
 
     sf::Text score_text(score_font);
@@ -67,8 +68,8 @@ int main()
 
     sf::Text title_text(title_font);
 
-    sf::Vector2f score_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE + ss::SIZE);
-    sf::Vector2f highscore_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE*1.5 + ss::SIZE);
+    sf::Vector2f highscore_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE + ss::SIZE);
+    sf::Vector2f score_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE*1.5 + ss::SIZE);
 
     sf::Vector2f title_position = sf::Vector2f(ss::WIN_WIDTH / 10, ss::WIN_HEIGHT / 5);
 
@@ -89,6 +90,8 @@ int main()
 
 
     // Objects
+    ss::Score::initScore();
+
     ss::Explosion::initExplosion(explosion_texture);
     ss::Bullet::initBullet(player_bullet_texture, enemy_bullet_texture);
 
@@ -152,8 +155,8 @@ int main()
 
         ss::Explosion::actionExplosion(tick);
 
-        //high_score = "Highscore: " + highscore;
-        //score_string = "Score: " + score;
+        score_string = "Score: " + std::to_string(ss::Score::getScore());
+        score_text.setString(score_string);
 
         // Draw
         window.clear();

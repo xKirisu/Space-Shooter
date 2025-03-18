@@ -12,12 +12,14 @@ ss::Explosion::Explosion() : sprite(ss::EMPTY_TEXTURE)
 
 ss::Explosion::Explosion(sf::Texture& texture) : sprite(texture)
 {
-	animationSwapTime = 2.0f;
+	animationTickCollector = 0;
+	animationSwapTime = 0.4f;
 	animationMaxWidth = texture.getSize().x;
 
 	animationRect.position = sf::Vector2i(0, 0);
 	animationRect.size = sf::Vector2i(ss::SIZE, ss::SIZE);
 	sprite.setTextureRect(animationRect);
+	sprite.setScale(sf::Vector2f(ss::SCALE, ss::SCALE));
 }
 
 void ss::Explosion::initExplosion(sf::Texture& texture)

@@ -2,6 +2,7 @@
 #include "Global.hpp"
 #include "Bullet.hpp"
 #include "Explosion.hpp"
+#include "Score.hpp"
 #include <iostream>
 
 int ss::Enemy::enemiesIfMinimumBooser = 4;
@@ -21,7 +22,7 @@ ss::Enemy::Enemy()
 
 }
 
-ss::Enemy::Enemy(sf::Vector2f position, sf::Texture& texture, float move_speed, float shoot_speed, int hp, int animation_max_width) : Ship(position, texture)
+ss::Enemy::Enemy(sf::Vector2f position, sf::Texture& texture, float move_speed, float shoot_speed, int hp, int give_score, int animation_max_width) : Ship(position, texture)
 {
     moveSpeed = move_speed;
     shootSpeedTime = shoot_speed;
@@ -36,6 +37,8 @@ ss::Enemy::Enemy(sf::Vector2f position, sf::Texture& texture, float move_speed, 
     animationMaxWidth = animation_max_width;
     animationRect.size = sf::Vector2i(ss::SIZE, ss::SIZE);
     animationRect.position = sf::Vector2i(0, 0);
+
+    giveScore = give_score;
 }
 
 void ss::Enemy::action(float& tick, float& time)
@@ -96,9 +99,9 @@ void ss::Enemy::action(float& tick, float& time)
 void ss::Enemy::initEnemies(sf::Texture& enemy1, sf::Texture& enemy2, sf::Texture& enemy3, sf::Vector2f spawn_points[], int count)
 {
     sf::Vector2f position = sf::Vector2f(0, 0);
-    enemies_prefabs[EnemyType::ALAN] = Enemy(position, enemy1, 55, 0.75, 2, enemy1.getSize().x);
-    enemies_prefabs[EnemyType::BONBON] = Enemy(position, enemy2, 75, 1.75, 3, enemy2.getSize().x);
-    enemies_prefabs[EnemyType::LIPS] = Enemy(position, enemy3, 65, 1.95, 1, enemy3.getSize().x);
+    enemies_prefabs[EnemyType::ALAN] = Enemy(position, enemy1, 55, 0.75, 2, 10, enemy1.getSize().x);
+    enemies_prefabs[EnemyType::BONBON] = Enemy(position, enemy2, 75, 1.75, 3, 20, enemy2.getSize().x);
+    enemies_prefabs[EnemyType::LIPS] = Enemy(position, enemy3, 65, 1.95, 1, 30, enemy3.getSize().x);
 
     spawnPoints = spawn_points;
     spawnCount = count;
@@ -130,9 +133,14 @@ void ss::Enemy::spawnEnemy(float& tick)
     }
 }
 
-void ss::Enemy::die() 
+void ss::Enemy::die()
 {
-    
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+            [this](const Enemy& e) { return &e == this; }),
+        enemies.end());
+
+    ss::Score::giveScore(giveScore);
 }
 
 std::vector<ss::Enemy>& ss::Enemy::getEnemies()
