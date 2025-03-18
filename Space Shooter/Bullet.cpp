@@ -11,7 +11,7 @@ ss::Bullet::Bullet() :sprite(EMPTY_TEXTURE)
 
 ss::Bullet::Bullet(sf::Texture& texture) :sprite(texture)
 {
-	moveSpeed = 182;
+	moveSpeed = 215;
 	sprite.setScale(sf::Vector2f(SCALE, SCALE));
 }
 

@@ -14,11 +14,6 @@ ss::Ship::Ship(sf::Vector2f position, sf::Texture& texture) : sprite(texture)
 	sprite.setPosition(position);
 }
 
-ss::Ship::~Ship()
-{
-	Explosion::spawnExplosion(sprite.getPosition());
-}
-
 void ss::Ship::checkCollide(Bullet& bullet)
 {
 	sf::FloatRect own_collider = sprite.getGlobalBounds();

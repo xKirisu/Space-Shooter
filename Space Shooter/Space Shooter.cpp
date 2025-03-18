@@ -41,6 +41,7 @@ int main()
     sf::Texture lifepoint_texture("data/textures/life_icon.png");
 
     // Objects Base
+    bool gameOver = false;
     bool startGame = false;
 
     // Background
@@ -54,17 +55,16 @@ int main()
     life_point.setScale(sf::Vector2f(ss::SCALE, ss::SCALE));
 
     // Score
-    int highscore = 1;
-    int score = 1;
     std::string high_score = "Highscore: "+ std::to_string(ss::Score::getHighScore());
     std::string score_string = "Score: " + std::to_string(ss::Score::getScore());
     std::string title_string = "Space Shooter";
 
-    sf::Font score_font("data/fonts/Boldreel.ttf");
     sf::Font title_font("data/fonts/Boldreel.ttf");
+    //sf::Font title_font("data/fonts/Boldreel.ttf");
 
-    sf::Text score_text(score_font);
-    sf::Text highscore_text(score_font);
+    sf::Text score_text(title_font);
+    sf::Text highscore_text(title_font);
+    sf::Text game_over_text(title_font);
 
     sf::Text title_text(title_font);
 
@@ -87,6 +87,12 @@ int main()
     title_text.setString(title_string);
     title_text.setFillColor(sf::Color::Yellow);
     title_text.setPosition(title_position);
+
+    game_over_text.setCharacterSize(125);
+    game_over_text.setString("Game Over");
+    game_over_text.setFillColor(sf::Color::Red);
+    game_over_text.setPosition(title_position);
+
 
 
     // Objects
@@ -120,7 +126,10 @@ int main()
         {
             if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
             {
-                player.getEvent(*keyPressed);
+                if (!gameOver) {
+                    player.getEvent(*keyPressed);
+                }
+
 
                 if (!startGame) {
                     startGame = true;
@@ -141,18 +150,27 @@ int main()
 
         player.action(tick, time);
 
-        if (startGame) {
-            ss::Enemy::spawnEnemy(tick);
-        }
+        if (!gameOver) {
 
-        for (ss::Enemy& enemy : ss::Enemy::getEnemies()) {
-            enemy.action(tick, time);
+            if (player.getLifes() <= 0) {
+                gameOver = true;
+            }
+
+            if (startGame) {
+                ss::Enemy::spawnEnemy(tick);
+            }
+
+            for (ss::Enemy& enemy : ss::Enemy::getEnemies()) {
+                enemy.action(tick, time);
+            }
+
         }
 
         for (ss::Bullet& bullet : ss::Bullet::getBullets()) {
             bullet.action(tick);
         }
-
+        
+        ss::Explosion::removeExplosion();
         ss::Explosion::actionExplosion(tick);
 
         score_string = "Score: " + std::to_string(ss::Score::getScore());
@@ -170,7 +188,13 @@ int main()
             bullet.draw(window);
         }
 
-        player.draw(window);
+        if (gameOver) {
+            window.draw(game_over_text);
+        }
+        else {
+            player.draw(window);
+        }
+        
 
         ss::Explosion::drawExplosion(window);
 

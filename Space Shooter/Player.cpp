@@ -1,5 +1,6 @@
 #include "Global.hpp"
 #include "Player.hpp"
+#include "Explosion.hpp"
 #include "Bullet.hpp"
 #include <iostream>
 
@@ -21,19 +22,13 @@ void ss::Player::playAnimationBoosters(float& tick)
 		boosters.setTextureRect(boosters_rect);
 	}
 }
-
-void ss::Player::die()
-{
-
-}
-
 ss::Player::Player(sf::Vector2f position, sf::Texture& texture, sf::Texture& boosters_main_texture, sf::Texture& boosters_left_texture, sf::Texture& boosters_right_texture) : Ship(position, texture), boosters(boosters_main_texture)
 {
 	healthPoints = 3;
-	moveSpeed = 155.5f;
+	moveSpeed = 185.5f;
 
-	shootOffset = sf::Vector2f(0, -0.25);
-	shootSpeedTime = 0.5f;
+	shootOffset = sf::Vector2f(0, -0.45);
+	shootSpeedTime = 0.45f;
 
 	rect.position = sf::Vector2i(SIZE, 0);
 	rect.size = sf::Vector2i(SIZE, SIZE);
@@ -49,7 +44,7 @@ ss::Player::Player(sf::Vector2f position, sf::Texture& texture, sf::Texture& boo
 	boosters_rect.size = sf::Vector2i(SIZE, SIZE);
 
 	animationTickCollectorBoosters = 0;
-	animationSwapTimeBoosters = 0.35;
+	animationSwapTimeBoosters = 0.35f;
 
 	boosters_offset = sf::Vector2f(0, SIZE*SCALE);
 	boosters.setPosition(position + boosters_offset);
@@ -187,6 +182,10 @@ void ss::Player::action(float& tick, float& time)
 			checkCollide(bullet);
 		}
 	}
+}
+void ss::Player::die()
+{
+	Explosion::spawnExplosion(sprite.getPosition());
 }
 
 void ss::Player::draw(sf::RenderWindow& window)

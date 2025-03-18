@@ -1,8 +1,8 @@
 #include "Explosion.hpp"
 #include <iostream>
 
-int ss::Explosion::animationMaxWidth = ss::SIZE;
-ss::Explosion ss::Explosion::explisionPrefab;
+int ss::Explosion::animationMaxWidth = ss::SIZE*4;
+ss::Explosion ss::Explosion::explosionPrefab;
 std::vector<ss::Explosion> ss::Explosion::explosions;
 
 
@@ -13,7 +13,7 @@ ss::Explosion::Explosion() : sprite(ss::EMPTY_TEXTURE)
 ss::Explosion::Explosion(sf::Texture& texture) : sprite(texture)
 {
 	animationTickCollector = 0;
-	animationSwapTime = 0.4f;
+	animationSwapTime = 0.25f;
 	animationMaxWidth = texture.getSize().x;
 
 	animationRect.position = sf::Vector2i(0, 0);
@@ -24,11 +24,11 @@ ss::Explosion::Explosion(sf::Texture& texture) : sprite(texture)
 
 void ss::Explosion::initExplosion(sf::Texture& texture)
 {
-	explisionPrefab = Explosion(texture);
+	explosionPrefab = Explosion(texture);
 }
 void ss::Explosion::spawnExplosion(sf::Vector2f position)
 {
-	explosions.push_back(explisionPrefab);
+	explosions.push_back(explosionPrefab);
 	explosions.back().sprite.setPosition(position);
 }
 
@@ -40,10 +40,9 @@ void ss::Explosion::actionExplosion(float& tick)
 		if (explosion.animationTickCollector > explosion.animationSwapTime) {
 			explosion.animationRect.position.x += ss::SIZE;
 			explosion.sprite.setTextureRect(explosion.animationRect);
+			explosion.animationTickCollector = 0;
 		}
 	}
-
-	Explosion::removeExplosion();
 }
 
 void ss::Explosion::drawExplosion(sf::RenderWindow& window)

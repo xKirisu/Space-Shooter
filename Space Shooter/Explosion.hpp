@@ -11,7 +11,7 @@ namespace ss {
 		float animationSwapTime;
 		static int animationMaxWidth;
 
-		static Explosion explisionPrefab;
+		static Explosion explosionPrefab;
 		sf::Sprite sprite;
 		sf::IntRect animationRect;
 

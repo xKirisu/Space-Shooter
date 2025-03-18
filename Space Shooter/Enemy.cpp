@@ -22,7 +22,7 @@ ss::Enemy::Enemy()
 
 }
 
-ss::Enemy::Enemy(sf::Vector2f position, sf::Texture& texture, float move_speed, float shoot_speed, int hp, int give_score, int animation_max_width) : Ship(position, texture)
+ss::Enemy::Enemy(sf::Texture& texture, float move_speed, float shoot_speed, int hp, int give_score, int animation_max_width) : Ship(sf::Vector2f(0,0), texture)
 {
     moveSpeed = move_speed;
     shootSpeedTime = shoot_speed;
@@ -99,9 +99,10 @@ void ss::Enemy::action(float& tick, float& time)
 void ss::Enemy::initEnemies(sf::Texture& enemy1, sf::Texture& enemy2, sf::Texture& enemy3, sf::Vector2f spawn_points[], int count)
 {
     sf::Vector2f position = sf::Vector2f(0, 0);
-    enemies_prefabs[EnemyType::ALAN] = Enemy(position, enemy1, 55, 0.75, 2, 10, enemy1.getSize().x);
-    enemies_prefabs[EnemyType::BONBON] = Enemy(position, enemy2, 75, 1.75, 3, 20, enemy2.getSize().x);
-    enemies_prefabs[EnemyType::LIPS] = Enemy(position, enemy3, 65, 1.95, 1, 30, enemy3.getSize().x);
+                                            //prefab, movespeed, shootspeed, lives, score, animation
+    enemies_prefabs[EnemyType::ALAN] = Enemy(enemy1, 65, 0.75, 2, 10, enemy1.getSize().x);
+    enemies_prefabs[EnemyType::BONBON] = Enemy(enemy2, 85, 1.55, 3, 20, enemy2.getSize().x);
+    enemies_prefabs[EnemyType::LIPS] = Enemy(enemy3, 70, 1.85, 1, 30, enemy3.getSize().x);
 
     spawnPoints = spawn_points;
     spawnCount = count;
@@ -112,7 +113,7 @@ void ss::Enemy::spawnEnemy(float& tick)
 {
 
     if (enemies.size() < enemiesIfMinimumBooser) {
-        enemiesSpawnCollector += tick*2;
+        enemiesSpawnCollector += tick*3;
     }
     else {
         enemiesSpawnCollector += tick ;
@@ -120,7 +121,7 @@ void ss::Enemy::spawnEnemy(float& tick)
 
     if (enemiesSpawnCollector > enemiesSpawnBreak) {
 
-        int random_position = std::rand() & spawnCount;
+        int random_position = std::rand() % spawnCount;
         sf::Vector2f position = spawnPoints[random_position];
 
         int random_enemy = std::rand() % ENEMIES_COUNT;
@@ -135,6 +136,8 @@ void ss::Enemy::spawnEnemy(float& tick)
 
 void ss::Enemy::die()
 {
+    Explosion::spawnExplosion(sprite.getPosition());
+
     enemies.erase(
         std::remove_if(enemies.begin(), enemies.end(),
             [this](const Enemy& e) { return &e == this; }),
