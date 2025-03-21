@@ -1,13 +1,15 @@
 #ifndef _SS_Score
 #define _SS_Score
 
+#include <string>
+
 namespace ss {
 
 	class Score {
 	private:
 		static int score;
 		static int high_score;
-
+		static std::string filePath;
 
 	public:
 

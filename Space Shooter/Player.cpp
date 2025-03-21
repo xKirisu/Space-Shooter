@@ -4,198 +4,216 @@
 #include "Bullet.hpp"
 #include <iostream>
 
-void ss::Player::playAnimationBoosters(float& tick)
+namespace ss
 {
-	animationTickCollectorBoosters += tick;
 
-	if (animationTickCollectorBoosters >= animationSwapTimeBoosters) {
+	void Player::playAnimationBoosters(float& tick)
+	{
+		animationTickCollectorBoosters += tick;
+
+		if (animationTickCollectorBoosters >= animationSwapTimeBoosters) {
+
+			animationTickCollectorBoosters = 0;
+
+			if (boosters_rect.position.x == SIZE) {
+				boosters_rect.position.x = 0;
+			}
+			else {
+				boosters_rect.position.x = SIZE;
+			}
+
+			boosters.setTextureRect(boosters_rect);
+		}
+	}
+
+	Player::Player(sf::Vector2f position, sf::Texture& texture, sf::Texture& boosters_main_texture, sf::Texture& boosters_left_texture, sf::Texture& boosters_right_texture, sf::Sound& shoot_sound, sf::Sound& death_sound, sf::Sound& hurt_sound) : Ship(position, texture), boosters(boosters_main_texture)
+	{
+		healthPoints = 3;
+		moveSpeed = 185.5f;
+
+		shootOffset = sf::Vector2f(0, -0.45);
+		shootSpeedTime = 0.45f;
+
+		rect.position = sf::Vector2i(SIZE, 0);
+		rect.size = sf::Vector2i(SIZE, SIZE);
+		sprite.setTextureRect(rect);
+
+
+		// boosters
+		textureBoostersMain = &boosters_main_texture;
+		textureBoostersLeft = &boosters_left_texture;
+		textureBoostersRight = &boosters_right_texture;
+
+		boosters_rect.position = sf::Vector2i(0, 0);
+		boosters_rect.size = sf::Vector2i(SIZE, SIZE);
 
 		animationTickCollectorBoosters = 0;
+		animationSwapTimeBoosters = 0.35f;
 
-		if (boosters_rect.position.x == SIZE) {
-			boosters_rect.position.x = 0;
-		}
-		else {
-			boosters_rect.position.x = SIZE;
-		}
-
+		boosters_offset = sf::Vector2f(0, SIZE * SCALE);
+		boosters.setPosition(position + boosters_offset);
+		boosters.setScale(sf::Vector2f(SCALE, SCALE));
 		boosters.setTextureRect(boosters_rect);
+
+		shootSound = &shoot_sound;
+		deathSound = &death_sound;
+		hurtSound = &hurt_sound;
 	}
-}
-ss::Player::Player(sf::Vector2f position, sf::Texture& texture, sf::Texture& boosters_main_texture, sf::Texture& boosters_left_texture, sf::Texture& boosters_right_texture) : Ship(position, texture), boosters(boosters_main_texture)
-{
-	healthPoints = 3;
-	moveSpeed = 185.5f;
 
-	shootOffset = sf::Vector2f(0, -0.45);
-	shootSpeedTime = 0.45f;
-
-	rect.position = sf::Vector2i(SIZE, 0);
-	rect.size = sf::Vector2i(SIZE, SIZE);
-	sprite.setTextureRect(rect);
-
-
-	// boosters
-	textureBoostersMain = &boosters_main_texture;
-	textureBoostersLeft = &boosters_left_texture;
-	textureBoostersRight = &boosters_right_texture;
-
-	boosters_rect.position = sf::Vector2i(0, 0);
-	boosters_rect.size = sf::Vector2i(SIZE, SIZE);
-
-	animationTickCollectorBoosters = 0;
-	animationSwapTimeBoosters = 0.35f;
-
-	boosters_offset = sf::Vector2f(0, SIZE*SCALE);
-	boosters.setPosition(position + boosters_offset);
-	boosters.setScale(sf::Vector2f(SCALE, SCALE));
-	boosters.setTextureRect(boosters_rect);
-}
-
-void ss::Player::getEvent(sf::Event::KeyPressed keypress)
-{
-	if (keypress.scancode == sf::Keyboard::Scancode::W) {
-		moveUp = true;
-	}
-	if (keypress.scancode == sf::Keyboard::Scancode::S) {
-		moveDown = true;
-	}
-	if (keypress.scancode == sf::Keyboard::Scancode::A) {
-
-		if (!moveLeft) {
-			boosters.setTexture(*textureBoostersLeft);
+	void Player::getEvent(sf::Event::KeyPressed keypress)
+	{
+		if (keypress.scancode == sf::Keyboard::Scancode::W) {
+			moveUp = true;
 		}
-
-		moveLeft = true;
-	}
-	if (keypress.scancode == sf::Keyboard::Scancode::D) {
-
-		if (!moveRight) {
-			boosters.setTexture(*textureBoostersRight);
+		if (keypress.scancode == sf::Keyboard::Scancode::S) {
+			moveDown = true;
 		}
+		if (keypress.scancode == sf::Keyboard::Scancode::A) {
 
-		moveRight = true;
-	}
-	if (keypress.scancode == sf::Keyboard::Scancode::Space) {
-		isShoot = true;
-	}
-}
+			if (!moveLeft) {
+				boosters.setTexture(*textureBoostersLeft);
+			}
 
-void ss::Player::getEvent(sf::Event::KeyReleased keyreleased)
-{
-	if (keyreleased.scancode == sf::Keyboard::Scancode::W) {
-		moveUp = false;
-	}
-	if (keyreleased.scancode == sf::Keyboard::Scancode::S) {
-		moveDown = false;
-	}
-	if (keyreleased.scancode == sf::Keyboard::Scancode::A) {
+			moveLeft = true;
+		}
+		if (keypress.scancode == sf::Keyboard::Scancode::D) {
 
+			if (!moveRight) {
+				boosters.setTexture(*textureBoostersRight);
+			}
+
+			moveRight = true;
+		}
+		if (keypress.scancode == sf::Keyboard::Scancode::Space) {
+			isShoot = true;
+		}
+	}
+
+	void Player::getEvent(sf::Event::KeyReleased keyreleased)
+	{
+		if (keyreleased.scancode == sf::Keyboard::Scancode::W) {
+			moveUp = false;
+		}
+		if (keyreleased.scancode == sf::Keyboard::Scancode::S) {
+			moveDown = false;
+		}
+		if (keyreleased.scancode == sf::Keyboard::Scancode::A) {
+
+			if (moveLeft) {
+				boosters.setTexture(*textureBoostersMain);
+			}
+
+			moveLeft = false;
+
+			rect.position = sf::Vector2i(SIZE, 0);
+			sprite.setTextureRect(rect);
+		}
+		if (keyreleased.scancode == sf::Keyboard::Scancode::D) {
+
+			if (moveRight) {
+				boosters.setTexture(*textureBoostersMain);
+			}
+
+			moveRight = false;
+
+			rect.position = sf::Vector2i(SIZE, 0);
+			sprite.setTextureRect(rect);
+		}
+		if (keyreleased.scancode == sf::Keyboard::Scancode::Space) {
+			isShoot = false;
+		}
+	}
+
+	void Player::action(float& tick, float& time)
+	{
 		if (moveLeft) {
-			boosters.setTexture(*textureBoostersMain);
-		}
-
-		moveLeft = false;
-
-		rect.position = sf::Vector2i(SIZE, 0);
-		sprite.setTextureRect(rect);
-	}
-	if (keyreleased.scancode == sf::Keyboard::Scancode::D) {
-
-		if (moveRight) {
-			boosters.setTexture(*textureBoostersMain);
-		}
-
-		moveRight = false;
-
-		rect.position = sf::Vector2i(SIZE, 0);
-		sprite.setTextureRect(rect);
-	}
-	if (keyreleased.scancode == sf::Keyboard::Scancode::Space) {
-		isShoot = false;
-	}
-}
-
-void ss::Player::action(float& tick, float& time)
-{
-	if (moveLeft) {
-		sprite.move(sf::Vector2f(-moveSpeed * tick, 0));
-		boosters.move(sf::Vector2f(-moveSpeed * tick, 0));
-
-		rect.position = sf::Vector2i(0, 0);
-		sprite.setTextureRect(rect);
-
-		if (sprite.getPosition().x < 0) {
-			sprite.move(sf::Vector2f(moveSpeed * tick, 0));
-			boosters.move(sf::Vector2f(moveSpeed * tick, 0));
-		}
-	}
-	if (moveRight) {
-		sprite.move(sf::Vector2f(moveSpeed * tick, 0));
-		boosters.move(sf::Vector2f(moveSpeed * tick, 0));
-
-		rect.position = sf::Vector2i(2*SIZE, 0);
-		sprite.setTextureRect(rect);
-
-		if (sprite.getPosition().x > WIN_WIDTH - SIZE*SCALE) {
 			sprite.move(sf::Vector2f(-moveSpeed * tick, 0));
 			boosters.move(sf::Vector2f(-moveSpeed * tick, 0));
+
+			rect.position = sf::Vector2i(0, 0);
+			sprite.setTextureRect(rect);
+
+			if (sprite.getPosition().x < 0) {
+				sprite.move(sf::Vector2f(moveSpeed * tick, 0));
+				boosters.move(sf::Vector2f(moveSpeed * tick, 0));
+			}
 		}
+		if (moveRight) {
+			sprite.move(sf::Vector2f(moveSpeed * tick, 0));
+			boosters.move(sf::Vector2f(moveSpeed * tick, 0));
 
-	}
-	if (moveUp) {
-		sprite.move(sf::Vector2f(0, -moveSpeed * tick));
-		boosters.move(sf::Vector2f(0, -moveSpeed * tick));
+			rect.position = sf::Vector2i(2 * SIZE, 0);
+			sprite.setTextureRect(rect);
 
-		if (sprite.getPosition().y < 0) {
+			if (sprite.getPosition().x > WIN_WIDTH - SIZE * SCALE) {
+				sprite.move(sf::Vector2f(-moveSpeed * tick, 0));
+				boosters.move(sf::Vector2f(-moveSpeed * tick, 0));
+			}
 
+		}
+		if (moveUp) {
+			sprite.move(sf::Vector2f(0, -moveSpeed * tick));
+			boosters.move(sf::Vector2f(0, -moveSpeed * tick));
+
+			if (sprite.getPosition().y < 0) {
+
+				sprite.move(sf::Vector2f(0, moveSpeed * tick));
+				boosters.move(sf::Vector2f(0, moveSpeed * tick));
+
+			}
+		}
+		if (moveDown) {
 			sprite.move(sf::Vector2f(0, moveSpeed * tick));
 			boosters.move(sf::Vector2f(0, moveSpeed * tick));
 
+			if (sprite.getPosition().y > WIN_HEIGHT - SIZE * SCALE) {
+
+				sprite.move(sf::Vector2f(0, -moveSpeed * tick));
+				boosters.move(sf::Vector2f(0, -moveSpeed * tick));
+			}
+		}
+
+		if (isShoot) {
+			if (time > shootLastTime + shootSpeedTime) {
+
+				shootSound->play();
+
+				sf::Vector2f position = sprite.getPosition() + shootOffset;
+				Bullet::spawnBullet(BulletType::PLAYER, position);
+				shootLastTime = time;
+
+			}
+		}
+
+		playAnimationBoosters(tick);
+
+		if (healthPoints > 0) {
+			for (Bullet& bullet : Bullet::getBullets()) {
+				if (bullet.getType() != BulletType::PLAYER) {
+					if (checkCollide(bullet)) {
+						hurtSound->play();
+					}
+				}
+			}
 		}
 	}
-	if (moveDown) {
-		sprite.move(sf::Vector2f(0, moveSpeed * tick));
-		boosters.move(sf::Vector2f(0, moveSpeed * tick));
+	void Player::die()
+	{
+		Explosion::spawnExplosion(sprite.getPosition());
 
-		if (sprite.getPosition().y > WIN_HEIGHT - SIZE * SCALE) {
-
-			sprite.move(sf::Vector2f(0, -moveSpeed * tick));
-			boosters.move(sf::Vector2f(0, -moveSpeed * tick));
-		}
+		deathSound->play();
 	}
 
-	if (isShoot) {
-		if (time > shootLastTime + shootSpeedTime) {
+	void Player::draw(sf::RenderWindow& window)
+	{
+		window.draw(boosters);
 
-			sf::Vector2f position = sprite.getPosition() + shootOffset;
-			Bullet::spawnBullet(BulletType::PLAYER, position);
-			shootLastTime = time;
-
-		}
+		Ship::draw(window);
 	}
 
-	playAnimationBoosters(tick);
-
-	for (Bullet& bullet : Bullet::getBullets()) {
-		if (bullet.getType() != BulletType::PLAYER) {
-			checkCollide(bullet);
-		}
+	int Player::getLifes()
+	{
+		return healthPoints;
 	}
-}
-void ss::Player::die()
-{
-	Explosion::spawnExplosion(sprite.getPosition());
-}
 
-void ss::Player::draw(sf::RenderWindow& window)
-{
-	window.draw(boosters);
-
-	Ship::draw(window);
-}
-
-int ss::Player::getLifes()
-{
-	return healthPoints;
 }

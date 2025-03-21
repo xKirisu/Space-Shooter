@@ -29,13 +29,17 @@ namespace ss {
 
 		int giveScore;
 
+
+		static sf::Sound* shootSound;
+		static sf::Sound* deathSound;
+
 	public:
 		Enemy();
 		Enemy(sf::Texture &texture, float move_speed, float shoot_speed, int hp, int give_score, int animation_max_width);
 
 		void action(float& tick, float& time);
 
-		static void initEnemies(sf::Texture& enemy1, sf::Texture& enemy2, sf::Texture& enemy3, sf::Vector2f spawn_points[], int count);
+		static void initEnemies(sf::Texture& enemy1, sf::Texture& enemy2, sf::Texture& enemy3, sf::Vector2f spawn_points[], int count, sf::Sound& shoot_sound, sf::Sound& death_sound);
 		static void spawnEnemy(float& tick);
 
 

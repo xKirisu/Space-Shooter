@@ -14,7 +14,7 @@ ss::Ship::Ship(sf::Vector2f position, sf::Texture& texture) : sprite(texture)
 	sprite.setPosition(position);
 }
 
-void ss::Ship::checkCollide(Bullet& bullet)
+bool ss::Ship::checkCollide(Bullet& bullet)
 {
 	sf::FloatRect own_collider = sprite.getGlobalBounds();
 
@@ -27,7 +27,11 @@ void ss::Ship::checkCollide(Bullet& bullet)
 		if (healthPoints <= 0) {
 			die();
 		}
+
+		return true;
 	}
+
+	return false;
 }
 
 void ss::Ship::die()

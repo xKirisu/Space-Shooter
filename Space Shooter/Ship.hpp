@@ -25,7 +25,7 @@ namespace ss {
 		Ship();
 		Ship(sf::Vector2f position, sf::Texture& texture);
 
-		void checkCollide(Bullet& bullet);
+		bool checkCollide(Bullet& bullet);
 		virtual void die();
 
 		void shoot();

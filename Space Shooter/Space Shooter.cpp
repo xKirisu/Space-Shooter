@@ -15,6 +15,9 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode({ ss::WIN_WIDTH, ss::WIN_HEIGHT }), "Space Shooter");
     
+    // Init score
+    ss::Score::initScore();
+
     // Set Window Icon
     sf::Image icon("data/textures/icon.png");
     window.setIcon(icon);
@@ -40,7 +43,36 @@ int main()
 
     sf::Texture lifepoint_texture("data/textures/life_icon.png");
 
-    // Objects Base
+    // Load sounds and sounds
+    sf::Music music("data/sounds/xcreenplay__retro-playground.wav");
+    music.setVolume(2);
+    music.setLooping(true);
+    music.play();
+
+    sf::SoundBuffer buff_death_sound("data/sounds/etheraudio__retro-death.wav");
+    sf::Sound death_sound(buff_death_sound);
+    death_sound.setVolume(2);
+
+    sf::SoundBuffer buff_hurt_sound("data/sounds/cabled_mess__hurt_c_03.wav");
+    sf::Sound hurt_sound(buff_hurt_sound);
+    hurt_sound.setVolume(4);
+
+
+    sf::SoundBuffer buff_enemy_death_sound("data/sounds/jalastram__sfx_explosion_04.wav");
+    sf::Sound enemy_death_sound(buff_enemy_death_sound);
+    enemy_death_sound.setVolume(4);
+
+    sf::SoundBuffer buff_enemy_shoot_sound("data/sounds/greyfeather__retro-mouse-sound.wav");
+    sf::Sound enemy_shoot_sound(buff_enemy_shoot_sound);
+    enemy_shoot_sound.setVolume(2);
+
+    sf::SoundBuffer buff_shoot_sound("data/sounds/matrixxx__retro-laser-shot-04.wav");
+    sf::Sound shoot_sound(buff_shoot_sound);
+    shoot_sound.setVolume(2);
+
+
+
+    // Objects Base //FLAGS//
     bool gameOver = false;
     bool startGame = false;
 
@@ -60,11 +92,11 @@ int main()
     std::string title_string = "Space Shooter";
 
     sf::Font title_font("data/fonts/Boldreel.ttf");
-    //sf::Font title_font("data/fonts/Boldreel.ttf");
 
     sf::Text score_text(title_font);
     sf::Text highscore_text(title_font);
     sf::Text game_over_text(title_font);
+    sf::Text new_record(title_font);
 
     sf::Text title_text(title_font);
 
@@ -72,6 +104,8 @@ int main()
     sf::Vector2f score_position = sf::Vector2f(ss::SIZE, ss::WIN_HEIGHT - ss::SIZE * ss::SCALE*1.5 + ss::SIZE);
 
     sf::Vector2f title_position = sf::Vector2f(ss::WIN_WIDTH / 10, ss::WIN_HEIGHT / 5);
+    sf::Vector2f gameover_position = sf::Vector2f(ss::WIN_WIDTH / 5, ss::WIN_HEIGHT / 5);
+    sf::Vector2f new_record_position = sf::Vector2f(ss::WIN_WIDTH / 4, ss::WIN_HEIGHT * 0.65);
 
     score_text.setCharacterSize(24);
     score_text.setString(score_string);
@@ -91,12 +125,15 @@ int main()
     game_over_text.setCharacterSize(125);
     game_over_text.setString("Game Over");
     game_over_text.setFillColor(sf::Color::Red);
-    game_over_text.setPosition(title_position);
+    game_over_text.setPosition(gameover_position);
 
+    new_record.setCharacterSize(96);
+    new_record.setString("New Record");
+    new_record.setFillColor(sf::Color::Yellow);
+    new_record.setPosition(new_record_position);
 
 
     // Objects
-    ss::Score::initScore();
 
     ss::Explosion::initExplosion(explosion_texture);
     ss::Bullet::initBullet(player_bullet_texture, enemy_bullet_texture);
@@ -104,13 +141,13 @@ int main()
     sf::Vector2f spawn_points[] = {
         sf::Vector2f(0, 0), 
         sf::Vector2f(ss::WIN_WIDTH - ss::SIZE*ss::SCALE, ss::SIZE), 
-        sf::Vector2f(0, ss::SIZE*2),
-         sf::Vector2f(ss::WIN_WIDTH - ss::SIZE * ss::SCALE, ss::SIZE*2)
+        sf::Vector2f(0, ss::SIZE*ss::SCALE * 2),
+         sf::Vector2f(ss::WIN_WIDTH - ss::SIZE * ss::SCALE, ss::SIZE * ss::SCALE * 2)
     };
-    ss::Enemy::initEnemies(enemy1_texture, enemy2_texture, enemy3_texture, spawn_points, 4);
+    ss::Enemy::initEnemies(enemy1_texture, enemy2_texture, enemy3_texture, spawn_points, 4, enemy_shoot_sound, enemy_death_sound);
 
     sf::Vector2f player_start_position = sf::Vector2f(ss::WIN_WIDTH/2 - ss::SIZE*ss::SCALE/2 + ss::SIZE, ss::WIN_HEIGHT/2 + ss::SIZE * ss::SCALE*3);
-    ss::Player player(player_start_position, player_texture, boosters_texture, boosters_left_texture, boosters_right_texture);
+    ss::Player player(player_start_position, player_texture, boosters_texture, boosters_left_texture, boosters_right_texture, shoot_sound, death_sound, hurt_sound);
 
 
     // Ticks and Time
@@ -154,6 +191,7 @@ int main()
 
             if (player.getLifes() <= 0) {
                 gameOver = true;
+                ss::Score::saveHighScore();
             }
 
             if (startGame) {
@@ -190,6 +228,10 @@ int main()
 
         if (gameOver) {
             window.draw(game_over_text);
+
+            if (ss::Score::getScore() > ss::Score::getHighScore()) {
+                window.draw(new_record);
+            }
         }
         else {
             player.draw(window);
